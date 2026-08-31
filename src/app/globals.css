@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f6f6f4;
+  --foreground: #10151f;
+}
+
+.dark {
+  --background: #0a0e17;
+  --foreground: #ffffff;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+/* Hide the scrollbar on an element (used by the homepage's Shorts-style
+   snap-scroll feed) while keeping it fully scrollable. */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge/IE */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Chromium Edge */
+}
+
+/* ---- Google Translate: hide all default chrome ----
+   We drive translation entirely through the googtrans cookie
+   (LanguageSwitcher). None of Google's UI should ever show. */
+
+/* Nuke the Google Translate iframe entirely */
+iframe.skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+}
+
+/* Force HTML and Body to stay flush at the top to prevent the push-down effect */
+html {
+  top: 0 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+body {
+  top: 0 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Hide any other rogue translation gadgets */
+.skiptranslate {
+  display: none !important;
+}
+
+/* Hide the annoying hover tooltips Google adds over translated text */
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Hide the Google Translate gadget if it tries to render anywhere */
+#google_translate_element,
+.goog-te-gadget {
+  display: none !important;
+}

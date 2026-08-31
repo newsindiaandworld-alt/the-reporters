@@ -1,0 +1,10 @@
+CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE TYPE dispatch_type_enum AS ENUM ('audio_memo', 'video_short', 'breaking_alert', 'article');
+CREATE TYPE editorial_status_enum AS ENUM ('draft', 'pending_review', 'verified_published', 'rejected');
+CREATE TABLE reporters (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), full_name VARCHAR(120) NOT NULL, slug VARCHAR(140) UNIQUE NOT NULL, email VARCHAR(255) UNIQUE NOT NULL, avatar_url TEXT, bio TEXT, beat VARCHAR(100), is_verified BOOLEAN DEFAULT FALSE, created_at TIMESTAMPTZ DEFAULT NOW());
+CREATE TABLE categories (id SERIAL PRIMARY KEY, name VARCHAR(80) NOT NULL, slug VARCHAR(100) UNIQUE NOT NULL);
+CREATE TABLE articles (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), reporter_id UUID REFERENCES reporters(id) ON DELETE SET NULL, category_id INT REFERENCES categories(id) ON DELETE RESTRICT, title VARCHAR(300) NOT NULL, slug VARCHAR(350) UNIQUE NOT NULL, summary_bullets JSONB DEFAULT '[]'::jsonb, content TEXT NOT NULL, cover_image_url TEXT, audio_narration_url TEXT, is_breaking BOOLEAN DEFAULT FALSE, source_type VARCHAR(50) DEFAULT 'Standard', status editorial_status_enum DEFAULT 'draft', read_time_minutes INT DEFAULT 3, published_at TIMESTAMPTZ, created_at TIMESTAMPTZ DEFAULT NOW());
+CREATE TABLE dispatches (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), reporter_id UUID NOT NULL REFERENCES reporters(id) ON DELETE CASCADE, dispatch_type dispatch_type_enum NOT NULL, title VARCHAR(255) NOT NULL, description TEXT, location_point GEOGRAPHY(Point, 4326) NOT NULL, landmark_address TEXT, editorial_status editorial_status_enum DEFAULT 'pending_review', media_url TEXT NOT NULL, waveform_data JSONB, duration_seconds NUMERIC(6, 2), created_at TIMESTAMPTZ DEFAULT NOW());
+CREATE INDEX idx_dispatches_geo ON dispatches USING GIST(location_point);
+CREATE INDEX idx_articles_published ON articles(status, published_at DESC);

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 84" role="img" aria-label="The Reporter's — Investigative, Reliable, Now">
+  <text x="0" y="40" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="600" fill="currentColor" letter-spacing="0.5">The Reporter&#8217;s</text>
+  <line x1="1" y1="52" x2="358" y2="52" stroke="#B8934B" stroke-width="1"/>
+  <text x="0" y="70" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="600" letter-spacing="3">
+    <tspan fill="#6B7280">INVESTIGATIVE</tspan>
+    <tspan fill="#B8934B">&#160;&#160;&#183;&#160;&#160;</tspan>
+    <tspan fill="#6B7280">RELIABLE</tspan>
+    <tspan fill="#B8934B">&#160;&#160;&#183;&#160;&#160;</tspan>
+    <tspan fill="#6B7280">NOW</tspan>
+  </text>
+</svg>
