@@ -1,14 +1,18 @@
 // Quick one-off seed script — inserts 6 fake published local-news articles
 // so the homepage grid has something to show. Run once from the project
-// root with: node scripts/seed.mjs
+// root with: node --env-file=.env.local scripts/seed.mjs
 //
-// Uses better-sqlite3 directly (already a project dependency) rather than
+// Uses @libsql/client directly (already a project dependency) rather than
 // importing the TS schema, so it runs with plain `node` — no ts-node/tsx
 // or path-alias setup required.
 
-import Database from "better-sqlite3";
+import { createClient } from "@libsql/client";
 
-const db = new Database("sqlite.db");
+const client = createClient({
+  url: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
+
 const now = Math.floor(Date.now() / 1000); // schema stores created_at as unix seconds
 
 const articles = [
@@ -62,24 +66,17 @@ const articles = [
   },
 ];
 
-const insert = db.prepare(`
-  INSERT INTO articles (title, content, status, reporter_name, location, created_at)
-  VALUES (@title, @content, 'published', @reporterName, @location, @createdAt)
-`);
+async function seed() {
+  for (const a of articles) {
+    await client.execute({
+      sql: `INSERT INTO articles (title, content, status, reporter_name, location, created_at)
+            VALUES (?, ?, 'published', ?, ?, ?)`,
+      args: [a.title, a.content, a.reporterName, a.location, now - a.offsetSeconds],
+    });
+  }
 
-const insertMany = db.transaction((rows) => {
-  for (const row of rows) insert.run(row);
-});
+  console.log(`Seeded ${articles.length} published articles into Turso.`);
+  client.close();
+}
 
-insertMany(
-  articles.map((a) => ({
-    title: a.title,
-    content: a.content,
-    reporterName: a.reporterName,
-    location: a.location,
-    createdAt: now - a.offsetSeconds,
-  }))
-);
-
-console.log(`Seeded ${articles.length} published articles into sqlite.db.`);
-db.close();
+seed();
