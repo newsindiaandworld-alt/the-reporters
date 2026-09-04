@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Script from "next/script";
 
 declare global {
   interface Window {
@@ -38,16 +39,13 @@ export default function GoogleTranslate() {
         CONTAINER_ID
       );
     };
-
-    if (!document.getElementById(SCRIPT_ID)) {
-      const script = document.createElement("script");
-      script.id = SCRIPT_ID;
-      script.src =
-        "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-      script.async = true;
-      document.body.appendChild(script);
-    }
   }, []);
 
-  return null;
+  return (
+    <Script
+      id={SCRIPT_ID}
+      src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+      strategy="lazyOnload"
+    />
+  );
 }

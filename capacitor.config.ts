@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'The Reporters',
   webDir: 'public',
   server: {
-    url: 'http://10.0.2.2:3000',
+    url: 'https://the-reporters.vercel.app',
     cleartext: true
   }
 };

@@ -16,7 +16,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-navy-800 dark:bg-navy-950/90">
-      <div className="mx-auto flex h-20 w-full max-w-6xl flex-nowrap items-center justify-between px-4 md:h-24">
+      <div className="mx-auto flex h-20 w-full max-w-6xl flex-nowrap items-center justify-between gap-4 px-4 md:h-24 md:gap-8">
         <Link
           href="/"
           aria-label="The Reporter's home"
@@ -38,7 +38,7 @@ export default function Navbar() {
           </div>
           <Link
             href="/studio"
-            className="flex flex-shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-brand-gold bg-brand-gold/10 px-3 py-1.5 text-xs font-semibold text-brand-gold transition-all duration-300 ease-out hover:bg-brand-gold hover:text-navy-950 dark:bg-transparent dark:border-[#B8934B] dark:text-[#B8934B] dark:hover:bg-[#B8934B] dark:hover:text-navy-950 sm:px-3.5 sm:text-sm"
+            className="hidden flex-shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-brand-gold bg-brand-gold/10 px-3 py-1.5 text-xs font-semibold text-brand-gold transition-all duration-300 ease-out hover:bg-brand-gold hover:text-navy-950 dark:bg-transparent dark:border-[#B8934B] dark:text-[#B8934B] dark:hover:bg-[#B8934B] dark:hover:text-navy-950 sm:flex sm:px-3.5 sm:text-sm"
           >
             <Plus size={14} strokeWidth={2.5} />
             Submit News
@@ -131,6 +131,13 @@ export default function Navbar() {
               className="w-full rounded-full border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-gray-200 placeholder:text-neutral-500 focus:border-brand-gold focus:outline-none"
             />
           </form>
+          <Link
+            href="/studio"
+            className="flex items-center gap-2 px-6 py-4 border-b border-neutral-800/50 text-lg font-semibold text-brand-gold hover:bg-white/5 transition-colors"
+          >
+            <Plus size={18} strokeWidth={2.5} />
+            Submit News
+          </Link>
           <Link
             href="/"
             className="px-6 py-4 border-b border-neutral-800/50 text-lg font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"

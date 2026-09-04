@@ -1,62 +1,43 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { googleSignIn } from "@/lib/authActions";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export const dynamic = "force-dynamic";
 
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: { error?: string };
+}) {
   const googleConfigured = Boolean(
     process.env.NEXT_PUBLIC_GOOGLE_ENABLED === "true"
   );
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(false);
-
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-
-    if (result?.error) {
-      setError(true);
-      setIsSubmitting(false);
-      return;
-    }
-
-    // Hard redirect (not router.push) so the whole app remounts and
-    // useSession in the Navbar picks up the freshly-set session cookie.
-    window.location.href = "/studio";
-  };
 
   return (
     <div className="max-w-sm mx-auto p-4 mt-16 bg-white border border-slate-200 rounded-xl dark:bg-navy-900 dark:border-navy-800">
       <h1 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Log In</h1>
 
-      {error && (
+      {searchParams.error && (
         <p className="mb-4 text-xs text-red-600 dark:text-red-400">
           Invalid email or password.
         </p>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {/*
+        Plain native HTML form: a real browser-level POST to a URL, with no
+        onSubmit/fetch and no reliance on client-side JS hydration. This is
+        the "foolproof" path for WebViews where JS execution is unreliable —
+        the server validates credentials, sets the session cookie, and
+        replies with an HTTP redirect.
+      */}
+      <form action="/api/auth/login" method="POST" className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-slate-600 dark:text-navy-300 mb-1">
             Email
           </label>
           <input
             type="email"
+            name="email"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-brand-gold dark:border-navy-700 dark:bg-navy-900 dark:text-white"
           />
         </div>
@@ -66,19 +47,17 @@ export default function LoginPage() {
           </label>
           <input
             type="password"
+            name="password"
             required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-brand-gold dark:border-navy-700 dark:bg-navy-900 dark:text-white"
           />
         </div>
 
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="w-full rounded-md bg-brand-gold px-3 py-2 text-sm font-semibold text-navy-950 disabled:opacity-50"
+          className="w-full rounded-md bg-brand-gold px-3 py-2 text-sm font-semibold text-navy-950"
         >
-          {isSubmitting ? "Logging in..." : "Log In"}
+          Log In
         </button>
       </form>
 

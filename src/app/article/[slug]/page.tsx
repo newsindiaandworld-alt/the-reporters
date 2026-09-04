@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { eq, ne, and, desc } from "drizzle-orm";
 import { format } from "date-fns";
@@ -76,6 +77,7 @@ async function ArticleSlide({
   isBookmarked,
   isLoggedIn,
   currentUserId,
+  isFirst,
 }: {
   article: typeof articles.$inferSelect;
   isOwner: boolean;
@@ -84,6 +86,7 @@ async function ArticleSlide({
   isBookmarked: boolean;
   isLoggedIn: boolean;
   currentUserId?: string;
+  isFirst: boolean;
 }) {
   const articleComments = await db
     .select({
@@ -101,7 +104,7 @@ async function ArticleSlide({
 
   return (
     <div className="relative w-full min-h-[calc(100vh-64px)] snap-start flex flex-col items-center justify-start bg-[#0a0b10] py-4 md:py-10">
-      <div className="w-full max-w-4xl mx-auto aspect-video bg-black md:rounded-2xl overflow-hidden mb-8 shadow-2xl border border-neutral-800 shrink-0">
+      <div className="relative w-full max-w-4xl mx-auto aspect-video bg-black md:rounded-2xl overflow-hidden mb-8 shadow-2xl border border-neutral-800 shrink-0">
         {article.imageUrl ? (
           article.mediaType === "video" ? (
             <video
@@ -114,7 +117,14 @@ async function ArticleSlide({
               className="w-full h-full object-cover"
             />
           ) : (
-            <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover" />
+            <Image
+              src={article.imageUrl}
+              alt={article.title}
+              fill
+              sizes="(max-width: 896px) 100vw, 896px"
+              priority={isFirst}
+              className="object-cover"
+            />
           )
         ) : (
           <div className="w-full h-full bg-zinc-900" />
@@ -300,7 +310,7 @@ export default async function ArticlePage({ params, searchParams }: ArticlePageP
 
   return (
     <div className="w-full h-[calc(100vh-64px)] overflow-y-auto snap-y snap-mandatory bg-black scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-      {feed.map((a) => (
+      {feed.map((a, index) => (
         <ArticleSlide
           key={a.id}
           article={a}
@@ -310,6 +320,7 @@ export default async function ArticlePage({ params, searchParams }: ArticlePageP
           isBookmarked={engagement.bookmarkedByMe.has(a.id)}
           isLoggedIn={Boolean(userId)}
           currentUserId={userId}
+          isFirst={index === 0}
         />
       ))}
     </div>
